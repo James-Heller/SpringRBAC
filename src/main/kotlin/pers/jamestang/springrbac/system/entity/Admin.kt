@@ -3,8 +3,8 @@ package pers.jamestang.springrbac.system.entity
 import org.ktorm.entity.Entity
 
 
-interface User : Entity<User>{
-    companion object : Entity.Factory<User>()
+interface Admin : Entity<Admin>{
+    companion object : Entity.Factory<Admin>()
     val id: Long
     var username: String
     var password: String

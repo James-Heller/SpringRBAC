@@ -3,6 +3,7 @@ package pers.jamestang.springrbac.system.util
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
 import java.security.Key
+import java.time.Duration
 import java.util.*
 
 
@@ -10,16 +11,18 @@ object JWTUtil {
 
     private const val SECRET_KEY = "FC93FD316952B4519CB11EA30467A90BE52035ACA41EED1A600A3F27892583D1"
 
-    fun generateToken(subject: String, claims: Map<String, Any>): String {
+    fun generateToken(subject: String, claims: Map<String, Any>, willExpired: Boolean): String {
 
         val now = Date()
-
-        return Jwts.builder()
+        val builder = Jwts.builder()
             .setClaims(claims)
             .setSubject(subject)
             .setIssuedAt(now)
             .signWith(getSignKey())
-            .compact()
+
+        if (willExpired) builder.setExpiration(Date(now.time + Duration.ofDays(1).toMillis()))
+
+        return builder.compact()
     }
 
 

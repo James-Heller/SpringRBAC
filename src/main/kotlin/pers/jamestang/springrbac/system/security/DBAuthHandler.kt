@@ -5,8 +5,8 @@ import org.ktorm.dsl.*
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
-import pers.jamestang.springrbac.system.entity.LoginUser
-import pers.jamestang.springrbac.system.repository.Users
+import pers.jamestang.springrbac.system.entity.LoginAdmin
+import pers.jamestang.springrbac.system.repository.Admins
 
 @Component
 class DBAuthHandler(
@@ -14,12 +14,12 @@ class DBAuthHandler(
 ): UserDetailsService {
     override fun loadUserByUsername(username: String): UserDetails {
 
-        val user = database.from(Users)
+        val admin = database.from(Admins)
             .select()
-            .where { Users.username eq username }
-            .map { Users.createEntity(it) }
-            .firstOrNull() ?: throw Exception("User not found")
+            .where { Admins.username eq username }
+            .map { Admins.createEntity(it) }
+            .firstOrNull() ?: throw Exception("Admin not found")
 
-        return LoginUser(user)
+        return LoginAdmin(admin)
     }
 }

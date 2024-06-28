@@ -7,7 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import pers.jamestang.springrbac.system.repository.Users
+import pers.jamestang.springrbac.system.repository.Admins
 import pers.jamestang.springrbac.system.service.IAuthService
 import pers.jamestang.springrbac.system.util.JWTUtil
 
@@ -26,16 +26,17 @@ class AuthService(
 
         SecurityContextHolder.getContext().authentication = authenticated
 
-        val user = database.from(Users)
+        val admin = database.from(Admins)
             .select()
-            .where { Users.username eq username }
-            .map { Users.createEntity(it) }
-            .firstOrNull() ?: throw Exception("User not found")
+            .where { Admins.username eq username }
+            .map { Admins.createEntity(it) }
+            .firstOrNull() ?: throw Exception("Admin not found")
 
         return JWTUtil.generateToken(
             username, mapOf(
-                "email" to user.email
-            )
+                "email" to admin.email
+            ),
+            true
         )
 
     }
@@ -44,7 +45,7 @@ class AuthService(
 
         val encryptedPassword = passwordEncoder.encode(password)
 
-        val result = database.insert(Users) {
+        val result = database.insert(Admins) {
             set(it.username, username)
             set(it.password, encryptedPassword)
             set(it.email, email)
