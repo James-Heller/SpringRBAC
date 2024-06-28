@@ -1,20 +1,22 @@
 package pers.jamestang.springrbac.system.security
 
+import org.ktorm.database.Database
+import org.ktorm.dsl.*
 import org.springframework.security.access.PermissionEvaluator
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
+import pers.jamestang.springrbac.system.repository.Permissions
+import pers.jamestang.springrbac.system.repository.RolePermissions
+import pers.jamestang.springrbac.system.repository.Roles
 import java.io.Serializable
 
 @Component
-class CustomPermissionEvaluator : PermissionEvaluator{
+class CustomPermissionEvaluator(
+    private val database: Database
+) : PermissionEvaluator {
     override fun hasPermission(authentication: Authentication, targetDomainObject: Any, permission: Any): Boolean {
-        authentication.authorities.forEach {
-            if (it.authority == permission) {
-                return true
-//                TODO real access control
-            }
-        }
-        return false
+
+        return getCurrentRoleSetPermission(authentication.authorities.map { it.authority }).contains(permission.toString())
     }
 
     override fun hasPermission(
@@ -24,5 +26,19 @@ class CustomPermissionEvaluator : PermissionEvaluator{
         permission: Any?
     ): Boolean {
         return false
+    }
+
+
+    private fun getCurrentRoleSetPermission(roleCodes: List<String>): List<String> {
+        return database.from(Permissions)
+            .leftJoin(RolePermissions, on = Permissions.id eq RolePermissions.permissionId)
+            .leftJoin(Roles, on = RolePermissions.roleId eq Roles.id)
+            .select(Permissions.code)
+            .where {
+                Roles.roleCode inList roleCodes
+            }.map { row ->
+                row[Permissions.code]!!
+            }
+
     }
 }
