@@ -2,11 +2,14 @@ package pers.jamestang.springrbac.system.security
 
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import pers.jamestang.springrbac.system.entity.LoginAdmin
 import pers.jamestang.springrbac.system.repository.Admins
+import pers.jamestang.springrbac.system.repository.Roles
+import pers.jamestang.springrbac.system.repository.UserRoles
 
 @Component
 class DBAuthHandler(
@@ -20,6 +23,11 @@ class DBAuthHandler(
             .map { Admins.createEntity(it) }
             .firstOrNull() ?: throw Exception("Admin not found")
 
-        return LoginAdmin(admin)
+        val userRoles = database.from(Roles)
+            .leftJoin(UserRoles, Roles.id eq UserRoles.roleId)
+            .select(Roles.roleCode)
+            .map { row -> SimpleGrantedAuthority(row[Roles.roleCode]) }
+
+        return LoginAdmin(admin, userRoles.toMutableList())
     }
 }

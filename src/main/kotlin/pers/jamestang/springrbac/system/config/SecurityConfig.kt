@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
@@ -13,14 +14,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import pers.jamestang.springrbac.system.security.RestAccessDeniedHandler
 import pers.jamestang.springrbac.system.security.DBAuthHandler
+import pers.jamestang.springrbac.system.security.UnAuthorizeHandler
 import pers.jamestang.springrbac.system.security.filter.JwtAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
     private val dbAuthHandler: DBAuthHandler,
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val restAccessDeniedHandler: RestAccessDeniedHandler,
+    private val unAuthorizeHandler: UnAuthorizeHandler
 ) {
 
     @Bean
@@ -38,6 +44,10 @@ class SecurityConfig(
             csrf { disable() }
             sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtAuthenticationFilter)
+            exceptionHandling {
+                accessDeniedHandler = restAccessDeniedHandler
+                authenticationEntryPoint = unAuthorizeHandler
+            }
 
         }
 
