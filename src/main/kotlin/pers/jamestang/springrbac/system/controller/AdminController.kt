@@ -22,10 +22,7 @@ class AdminController(
     @DeleteMapping("/delete/{id}")
     fun delete(@PathVariable id: Long) = Resp.data(adminService.deleteUser(id))
 
-    @GetMapping("/getRoles")
-    fun getRoles(id: Long) = Resp.data(adminService.getUserRoles(id))
-
-
-
+    @GetMapping("/getUserRoles")
+    fun getUserRole(id: Int) = Resp.data(adminService.getUserRoles(id))
 
 }

@@ -2,7 +2,6 @@ package pers.jamestang.springrbac.system.repository
 
 import org.ktorm.schema.Table
 import org.ktorm.schema.int
-import org.ktorm.schema.long
 import org.ktorm.schema.varchar
 import pers.jamestang.springrbac.system.entity.Role
 

@@ -76,11 +76,13 @@ class AdminService(
     }
 
 
-    override fun getUserRoles(id: Long): List<Role> {
+    override fun getUserRoles(id: Int): List<Role> {
 
         val data = database .from(Roles)
             .leftJoin(UserRoles, on = Roles.id eq UserRoles.roleId)
-            .select(Roles.columns).map { row ->
+            .select(Roles.columns)
+            .where(UserRoles.userId eq id)
+            .map { row ->
                 Roles.createEntity(row)
             }.toList()
 

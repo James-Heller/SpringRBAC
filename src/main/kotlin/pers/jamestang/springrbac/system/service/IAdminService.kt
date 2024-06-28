@@ -19,5 +19,5 @@ interface IAdminService {
 
     fun pageUsers(page: Int, size: Int): Page<Admin>
 
-    fun getUserRoles(id: Long): List<Role>
+    fun getUserRoles(id: Int): List<Role>
 }
