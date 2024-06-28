@@ -8,7 +8,10 @@ import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.toList
 import org.springframework.stereotype.Service
 import pers.jamestang.springrbac.system.entity.Admin
+import pers.jamestang.springrbac.system.entity.Role
 import pers.jamestang.springrbac.system.repository.Admins
+import pers.jamestang.springrbac.system.repository.Roles
+import pers.jamestang.springrbac.system.repository.UserRoles
 import pers.jamestang.springrbac.system.service.IAdminService
 import pers.jamestang.springrbac.system.util.Page
 
@@ -69,7 +72,19 @@ class AdminService(
             }
             .toList()
 
-        return Page(content, totalElements.toLong(), totalPages, size)
+        return Page(content, totalElements, totalPages, size)
+    }
+
+
+    override fun getUserRoles(id: Long): List<Role> {
+
+        val data = database .from(Roles)
+            .leftJoin(UserRoles, on = Roles.id eq UserRoles.roleId)
+            .select(Roles.columns).map { row ->
+                Roles.createEntity(row)
+            }.toList()
+
+        return data
     }
 
 

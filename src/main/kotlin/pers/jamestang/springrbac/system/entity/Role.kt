@@ -4,7 +4,7 @@ import org.ktorm.entity.Entity
 
 interface Role: Entity<Role> {
     companion object : Entity.Factory<Role>()
-    val id: Long
+    val id: Int
     var roleCode: String
     var roleName: String
 }
