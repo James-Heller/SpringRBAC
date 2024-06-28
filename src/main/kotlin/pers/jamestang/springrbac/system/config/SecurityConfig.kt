@@ -59,8 +59,7 @@ class SecurityConfig(
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
     }
-
-    @Bean
+    
     fun daoAuthenticationProvider(): DaoAuthenticationProvider {
         val daoAuthenticationProvider = DaoAuthenticationProvider()
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder())
