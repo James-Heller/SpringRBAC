@@ -11,7 +11,7 @@ import pers.jamestang.springrbac.system.util.Resp
 class TestController {
 
     @GetMapping("/test1")
-    @PreAuthorize("hasRole('ROLE_CREATOR')")
+    @PreAuthorize("hasPermission('#Resp', 'READ')")
     fun test1(): Resp {
         return Resp.success()
     }

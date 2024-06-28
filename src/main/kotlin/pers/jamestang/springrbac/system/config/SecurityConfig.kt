@@ -2,6 +2,8 @@ package pers.jamestang.springrbac.system.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler
 import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import pers.jamestang.springrbac.system.security.CustomPermissionEvaluator
 import pers.jamestang.springrbac.system.security.RestAccessDeniedHandler
 import pers.jamestang.springrbac.system.security.DBAuthHandler
 import pers.jamestang.springrbac.system.security.UnAuthorizeHandler
@@ -26,7 +29,8 @@ class SecurityConfig(
     private val dbAuthHandler: DBAuthHandler,
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val restAccessDeniedHandler: RestAccessDeniedHandler,
-    private val unAuthorizeHandler: UnAuthorizeHandler
+    private val unAuthorizeHandler: UnAuthorizeHandler,
+    private val customPermissionEvaluator: CustomPermissionEvaluator
 ) {
 
     @Bean
@@ -68,6 +72,13 @@ class SecurityConfig(
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    fun createExpressionHandler(): MethodSecurityExpressionHandler{
+        val expressHandler = DefaultMethodSecurityExpressionHandler()
+        expressHandler.setPermissionEvaluator(customPermissionEvaluator)
+        return expressHandler
     }
     
     fun daoAuthenticationProvider(): DaoAuthenticationProvider {
