@@ -20,4 +20,6 @@ interface IAdminService {
     fun pageUsers(page: Int, size: Int): Page<Admin>
 
     fun getUserRoles(id: Int): List<Role>
+
+    fun setUserRoles(id: Int, roleIds: List<Int>): Boolean
 }

@@ -19,5 +19,7 @@ interface IRoleService {
 
     fun deleteRole(id: Int): Boolean
 
-    fun getRoleMenu(roleId: Int): List<Menu>
+    fun getRoleMenus(roleId: Int): List<Menu>
+
+    fun setRoleMenus(roleId: Int, menuIds: List<Int>):Boolean
 }

@@ -50,23 +50,40 @@ class RoleService(
     override fun deleteRole(id: Int): Boolean {
         val deleteRoleFlag = database.sequenceOf(Roles).removeIf { it.id eq id } == 1
 
-        if (deleteRoleFlag){
-            database.delete(UserRoles){
+        if (deleteRoleFlag) {
+            database.delete(UserRoles) {
                 it.roleId eq id
             }
         }
         return deleteRoleFlag
     }
 
-    override fun getRoleMenu(roleId: Int): List<Menu> {
+    override fun getRoleMenus(roleId: Int): List<Menu> {
 
         return database.from(Menus)
             .rightJoin(RoleMenus, Menus.id eq RoleMenus.menuId)
             .selectDistinct(Menus.columns)
             .where { RoleMenus.roleId eq roleId }
-            .map (Menus::createEntity)
+            .map(Menus::createEntity)
 
     }
 
+    @Transactional
+    override fun setRoleMenus(roleId: Int, menuIds: List<Int>): Boolean {
 
+        database.delete(RoleMenus) {
+            it.roleId eq roleId
+        }
+
+        val result = database.batchInsert(RoleMenus) {
+            for (menuId in menuIds) {
+                item {
+                    it.roleId to roleId
+                    it.menuId to menuId
+                }
+            }
+        }
+
+        return result.size == menuIds.size
+    }
 }

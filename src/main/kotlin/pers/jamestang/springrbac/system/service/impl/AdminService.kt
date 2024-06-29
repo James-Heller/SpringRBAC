@@ -7,6 +7,7 @@ import org.ktorm.entity.first
 import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.toList
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import pers.jamestang.springrbac.system.entity.Admin
 import pers.jamestang.springrbac.system.entity.Role
 import pers.jamestang.springrbac.system.repository.Admins
@@ -89,5 +90,23 @@ class AdminService(
         return data
     }
 
+    @Transactional
+    override fun setUserRoles(id: Int, roleIds: List<Int>): Boolean {
+
+        database.delete(UserRoles){
+            it.userId eq id
+        }
+
+        val result = database.batchInsert(UserRoles){
+            for (roleId in roleIds){
+                item {
+                    set(it.userId, id)
+                    set(it.roleId, roleId)
+                }
+            }
+        }
+
+        return result.size == roleIds.size
+    }
 
 }
