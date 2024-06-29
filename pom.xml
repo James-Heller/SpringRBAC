@@ -79,6 +79,11 @@
             <version>4.0.0</version>
         </dependency>
         <dependency>
+            <groupId>org.ktorm</groupId>
+            <artifactId>ktorm-jackson</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>

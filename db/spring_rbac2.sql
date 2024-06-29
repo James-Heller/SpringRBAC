@@ -11,11 +11,43 @@
  Target Server Version : 80027 (8.0.27)
  File Encoding         : 65001
 
- Date: 28/06/2024 17:36:12
+ Date: 29/06/2024 10:31:08
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for dept_members
+-- ----------------------------
+DROP TABLE IF EXISTS `dept_members`;
+CREATE TABLE `dept_members`  (
+  `dept_id` int NOT NULL,
+  `dept_member` json NULL,
+  PRIMARY KEY (`dept_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of dept_members
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for role_menus
+-- ----------------------------
+DROP TABLE IF EXISTS `role_menus`;
+CREATE TABLE `role_menus`  (
+  `role_id` int NOT NULL,
+  `menu_id` int NOT NULL,
+  PRIMARY KEY (`role_id`, `menu_id`) USING BTREE,
+  INDEX `role_id`(`role_id` ASC) USING BTREE,
+  INDEX `role_menus_ibfk_2`(`menu_id` ASC) USING BTREE,
+  CONSTRAINT `role_menus_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `system_role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `role_menus_ibfk_2` FOREIGN KEY (`menu_id`) REFERENCES `system_menu` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of role_menus
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for role_permissions
@@ -35,6 +67,27 @@ CREATE TABLE `role_permissions`  (
 -- Records of role_permissions
 -- ----------------------------
 INSERT INTO `role_permissions` VALUES (1, 1);
+
+-- ----------------------------
+-- Table structure for system_dept
+-- ----------------------------
+DROP TABLE IF EXISTS `system_dept`;
+CREATE TABLE `system_dept`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '部门名称',
+  `primary_head` int NULL DEFAULT NULL,
+  `secondary_head` int NULL DEFAULT NULL,
+  `parent_id` int NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `第一负责人`(`primary_head` ASC) USING BTREE,
+  INDEX `第二负责人`(`secondary_head` ASC) USING BTREE,
+  CONSTRAINT `第一负责人` FOREIGN KEY (`primary_head`) REFERENCES `system_user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `第二负责人` FOREIGN KEY (`secondary_head`) REFERENCES `system_user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of system_dept
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for system_menu
