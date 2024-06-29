@@ -4,7 +4,7 @@ SpringRBAC 是一个基于 Spring Boot 3.2，Spring Security 6，Kotlin 2.0，Kt
 
 ## 主要技术栈
 
-- Spring Boot 3.2
+- Spring Boot 3.3
 - Spring Security 6
 - Kotlin 2.0
 - Ktorm
