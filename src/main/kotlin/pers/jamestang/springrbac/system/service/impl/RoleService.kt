@@ -2,13 +2,13 @@ package pers.jamestang.springrbac.system.service.impl
 
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
-import org.ktorm.entity.count
-import org.ktorm.entity.find
-import org.ktorm.entity.sequenceOf
-import org.ktorm.entity.toList
+import org.ktorm.entity.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import pers.jamestang.springrbac.system.entity.Menu
 import pers.jamestang.springrbac.system.entity.Role
+import pers.jamestang.springrbac.system.repository.Menus
+import pers.jamestang.springrbac.system.repository.RoleMenus
 import pers.jamestang.springrbac.system.repository.Roles
 import pers.jamestang.springrbac.system.repository.UserRoles
 import pers.jamestang.springrbac.system.service.IRoleService
@@ -36,30 +36,19 @@ class RoleService(
 
     override fun createRole(role: Role): Boolean {
 
-        val result = database.insert(Roles) {
-            set(it.roleCode, role.roleCode)
-            set(it.roleName, role.roleName)
-        }
+        val result = database.sequenceOf(Roles).add(role)
         return result == 1
     }
 
     override fun updateRole(role: Role): Boolean {
 
-        val result = database.update(Roles) {
-            set(it.roleCode, role.roleCode)
-            set(it.roleName, role.roleName)
-            where {
-                it.id eq role.id
-            }
-        }
+        val result = database.sequenceOf(Roles).update(role)
         return result == 1
     }
 
     @Transactional
     override fun deleteRole(id: Int): Boolean {
-        val deleteRoleFlag = database.delete(Roles) {
-            it.id eq id
-        } == 1
+        val deleteRoleFlag = database.sequenceOf(Roles).removeIf { it.id eq id } == 1
 
         if (deleteRoleFlag){
             database.delete(UserRoles){
@@ -67,6 +56,16 @@ class RoleService(
             }
         }
         return deleteRoleFlag
+    }
+
+    override fun getRoleMenu(roleId: Int): List<Menu> {
+
+        return database.from(Menus)
+            .rightJoin(RoleMenus, Menus.id eq RoleMenus.menuId)
+            .selectDistinct(Menus.columns)
+            .where { RoleMenus.roleId eq roleId }
+            .map (Menus::createEntity)
+
     }
 
 

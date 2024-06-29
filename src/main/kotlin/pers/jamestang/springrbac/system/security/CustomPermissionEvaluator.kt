@@ -2,6 +2,7 @@ package pers.jamestang.springrbac.system.security
 
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
+import org.springframework.cache.annotation.CachePut
 import org.springframework.security.access.PermissionEvaluator
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Component
@@ -29,7 +30,8 @@ class CustomPermissionEvaluator(
     }
 
 
-    private fun getCurrentRoleSetPermission(roleCodes: List<String>): List<String> {
+    @CachePut(cacheNames = ["permission"], key = "#roleCodes")
+    fun getCurrentRoleSetPermission(roleCodes: List<String>): List<String> {
         return database.from(Permissions)
             .leftJoin(RolePermissions, on = Permissions.id eq RolePermissions.permissionId)
             .leftJoin(Roles, on = RolePermissions.roleId eq Roles.id)

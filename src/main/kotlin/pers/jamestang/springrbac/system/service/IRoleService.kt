@@ -1,6 +1,7 @@
 package pers.jamestang.springrbac.system.service
 
 
+import pers.jamestang.springrbac.system.entity.Menu
 import pers.jamestang.springrbac.system.entity.Role
 import pers.jamestang.springrbac.system.util.Page
 
@@ -18,4 +19,5 @@ interface IRoleService {
 
     fun deleteRole(id: Int): Boolean
 
+    fun getRoleMenu(roleId: Int): List<Menu>
 }

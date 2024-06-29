@@ -13,7 +13,6 @@ class TestController {
     @GetMapping("/test1")
     @PreAuthorize("hasPermission('', 'READ')")
     fun test1(): Resp {
-//        TODO 将hasPermission简化为单参数
         return Resp.success()
     }
 }

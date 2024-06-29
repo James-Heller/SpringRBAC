@@ -2,6 +2,8 @@ package pers.jamestang.springrbac.system.service.impl
 
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
+import org.ktorm.entity.find
+import org.ktorm.entity.sequenceOf
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -26,11 +28,7 @@ class AuthService(
 
         SecurityContextHolder.getContext().authentication = authenticated
 
-        val admin = database.from(Admins)
-            .select()
-            .where { Admins.username eq username }
-            .map { Admins.createEntity(it) }
-            .firstOrNull() ?: throw Exception("Admin not found")
+        val admin = database.sequenceOf(Admins).find { it.username eq username } ?: throw RuntimeException("用户不存在")
 
         return JWTUtil.generateToken(
             username, mapOf(
