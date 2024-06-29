@@ -1,5 +1,7 @@
 package pers.jamestang.springrbac.system.service
 
+import pers.jamestang.springrbac.system.entity.Menu
+
 interface IAuthService {
 
     /**
@@ -12,4 +14,7 @@ interface IAuthService {
 
 
     fun registry(username: String, password: String, email: String): Boolean
+
+
+    fun getCurrentUserMenus(): List<Menu>
 }

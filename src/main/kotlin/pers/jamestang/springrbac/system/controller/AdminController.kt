@@ -17,12 +17,18 @@ class AdminController(
     fun list() = Resp.data(adminService.getAllUsers())
 
     @GetMapping("/get")
-    fun get(id: Long) = Resp.data(adminService.selectUserById(id))
+    fun get(id: Int) = Resp.data(adminService.selectUserById(id))
 
     @DeleteMapping("/delete/{id}")
-    fun delete(@PathVariable id: Long) = Resp.data(adminService.deleteUser(id))
+    fun delete(@PathVariable id: Int) = Resp.data(adminService.deleteUser(id))
 
     @GetMapping("/getUserRoles")
     fun getUserRole(id: Int) = Resp.data(adminService.getUserRoles(id))
+
+    @PostMapping("/updateUserRole")
+    fun updateUserRole(userId: Int, roleIds: List<Int>) = Resp.data(adminService.setUserRoles(userId, roleIds))
+
+    @GetMapping("/getUserMenus")
+    fun getUserMenus(id: Int) = Resp.data(adminService.getUserMenus(id))
 
 }

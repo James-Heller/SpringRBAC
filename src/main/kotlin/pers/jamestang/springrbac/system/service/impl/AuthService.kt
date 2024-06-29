@@ -9,7 +9,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import pers.jamestang.springrbac.system.entity.LoginAdmin
+import pers.jamestang.springrbac.system.entity.Menu
 import pers.jamestang.springrbac.system.repository.Admins
+import pers.jamestang.springrbac.system.repository.Menus
+import pers.jamestang.springrbac.system.repository.RoleMenus
+import pers.jamestang.springrbac.system.repository.UserRoles
 import pers.jamestang.springrbac.system.service.IAuthService
 import pers.jamestang.springrbac.system.util.JWTUtil
 
@@ -50,6 +55,16 @@ class AuthService(
         }
 
         return result > 0
+    }
+
+    override fun getCurrentUserMenus(): List<Menu> {
+
+        val id = (SecurityContextHolder.getContext().authentication.principal as LoginAdmin).getUserId()
+        return database.from(Menus)
+            .leftJoin(RoleMenus, on = RoleMenus.menuId eq Menus.id)
+            .leftJoin(UserRoles, on = UserRoles.roleId eq RoleMenus.roleId)
+            .select(Menus.columns)
+            .where(UserRoles.userId eq id).map(Menus::createEntity)
     }
 
 }

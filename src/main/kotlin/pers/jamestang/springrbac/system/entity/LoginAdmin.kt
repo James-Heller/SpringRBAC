@@ -15,4 +15,8 @@ class LoginAdmin(private val admin: Admin, private val authorities: MutableColle
     override fun getUsername(): String {
         return admin.username
     }
+
+    fun getUserId(): Int {
+        return admin.id
+    }
 }
