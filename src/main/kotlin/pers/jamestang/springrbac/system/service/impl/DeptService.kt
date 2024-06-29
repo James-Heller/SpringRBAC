@@ -51,4 +51,38 @@ class DeptService(
 
         return true
     }
+
+    override fun setPrimaryHead(deptId: Int, userId: Int?): Boolean {
+
+
+        return database.update(Departments){
+            set(it.primaryHead, userId)
+            where {
+                it.id eq deptId
+            }
+        } == 0
+    }
+
+    override fun setSecondaryHead(deptId: Int, userId: Int?): Boolean {
+
+        return database.update(Departments){
+            set(it.secondaryHead, userId)
+            where {
+                it.id eq deptId
+            }
+        } == 0
+    }
+
+    override fun changeDeptMembers(deptId: Int, userIds: List<Int>): Boolean {
+
+        database.sequenceOf(DepartmentMembers).removeIf { it.deptId eq deptId }
+
+        database.insert(DepartmentMembers){
+            set(it.deptId, deptId)
+            set(it.deptMember, userIds)
+        }
+
+        return true
+    }
+
 }

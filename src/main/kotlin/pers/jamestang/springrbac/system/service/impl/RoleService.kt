@@ -6,11 +6,9 @@ import org.ktorm.entity.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import pers.jamestang.springrbac.system.entity.Menu
+import pers.jamestang.springrbac.system.entity.Permission
 import pers.jamestang.springrbac.system.entity.Role
-import pers.jamestang.springrbac.system.repository.Menus
-import pers.jamestang.springrbac.system.repository.RoleMenus
-import pers.jamestang.springrbac.system.repository.Roles
-import pers.jamestang.springrbac.system.repository.UserRoles
+import pers.jamestang.springrbac.system.repository.*
 import pers.jamestang.springrbac.system.service.IRoleService
 import pers.jamestang.springrbac.system.util.Page
 
@@ -85,5 +83,29 @@ class RoleService(
         }
 
         return result.size == menuIds.size
+    }
+
+    override fun getRolePermissions(roleId: Int): List<Permission> {
+        return database.from(Permissions)
+            .rightJoin(RolePermissions, Permissions.id eq RolePermissions.permissionId)
+            .selectDistinct(Permissions.columns)
+            .where { RolePermissions.roleId eq roleId }
+            .map(Permissions::createEntity)
+    }
+
+    @Transactional
+    override fun setRolePermissions(roleId: Int, permissionIds: List<Int>): Boolean {
+        database.delete(RolePermissions) {
+            it.roleId eq roleId
+        }
+        val result = database.batchInsert(RolePermissions) {
+            for (permissionId in permissionIds) {
+                item {
+                    it.roleId to roleId
+                    it.permissionId to permissionId
+                }
+            }
+        }
+        return result.size == permissionIds.size
     }
 }

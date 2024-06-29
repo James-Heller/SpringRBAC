@@ -2,6 +2,7 @@ package pers.jamestang.springrbac.system.service
 
 
 import pers.jamestang.springrbac.system.entity.Menu
+import pers.jamestang.springrbac.system.entity.Permission
 import pers.jamestang.springrbac.system.entity.Role
 import pers.jamestang.springrbac.system.util.Page
 
@@ -22,4 +23,8 @@ interface IRoleService {
     fun getRoleMenus(roleId: Int): List<Menu>
 
     fun setRoleMenus(roleId: Int, menuIds: List<Int>):Boolean
+
+    fun getRolePermissions(roleId: Int): List<Permission>
+
+    fun setRolePermissions(roleId: Int, permissionIds: List<Int>): Boolean
 }

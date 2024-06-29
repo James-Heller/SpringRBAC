@@ -1,5 +1,6 @@
 package pers.jamestang.springrbac.system.controller
 
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -17,4 +18,7 @@ class AuthController(
 
     @PostMapping("/registry")
     fun registry(username: String, password: String, email: String) = Resp.data(authService.registry(username, password, email))
+
+    @GetMapping("/getCurrentUserMenus")
+    fun getCurrentUserMenus() = Resp.data(authService.getCurrentUserMenus())
 }

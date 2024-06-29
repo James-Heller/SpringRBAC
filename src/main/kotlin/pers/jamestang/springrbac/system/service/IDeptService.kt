@@ -15,5 +15,9 @@ interface IDeptService {
 
     fun deleteDept(id: Int): Boolean
 
+    fun setPrimaryHead(deptId: Int, userId: Int?): Boolean
 
+    fun setSecondaryHead(deptId: Int, userId: Int?): Boolean
+
+    fun changeDeptMembers(deptId: Int, userIds: List<Int>): Boolean
 }
