@@ -21,4 +21,7 @@ class AuthController(
 
     @GetMapping("/getCurrentUserMenus")
     fun getCurrentUserMenus() = Resp.data(authService.getCurrentUserMenus())
+
+    @GetMapping("/getCurrentUserPermissions")
+    fun getCurrentUserPermissions() = Resp.data(authService.getCurrentUserPermissions())
 }

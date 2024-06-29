@@ -11,10 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import pers.jamestang.springrbac.system.entity.LoginAdmin
 import pers.jamestang.springrbac.system.entity.Menu
-import pers.jamestang.springrbac.system.repository.Admins
-import pers.jamestang.springrbac.system.repository.Menus
-import pers.jamestang.springrbac.system.repository.RoleMenus
-import pers.jamestang.springrbac.system.repository.UserRoles
+import pers.jamestang.springrbac.system.repository.*
 import pers.jamestang.springrbac.system.service.IAuthService
 import pers.jamestang.springrbac.system.util.JWTUtil
 
@@ -61,10 +58,20 @@ class AuthService(
 
         val id = (SecurityContextHolder.getContext().authentication.principal as LoginAdmin).getUserId()
         return database.from(Menus)
-            .leftJoin(RoleMenus, on = RoleMenus.menuId eq Menus.id)
-            .leftJoin(UserRoles, on = UserRoles.roleId eq RoleMenus.roleId)
+            .innerJoin(RoleMenus, on = RoleMenus.menuId eq Menus.id)
+            .innerJoin(UserRoles, on = UserRoles.roleId eq RoleMenus.roleId)
             .select(Menus.columns)
             .where(UserRoles.userId eq id).map(Menus::createEntity)
+    }
+
+    override fun getCurrentUserPermissions(): List<String> {
+        val id = (SecurityContextHolder.getContext().authentication.principal as LoginAdmin).getUserId()
+        return database.from(Permissions)
+            .leftJoin(RolePermissions, on = RolePermissions.permissionId eq Permissions.id)
+            .leftJoin(UserRoles, on = UserRoles.roleId eq RolePermissions.roleId)
+            .select(Permissions.code)
+            .where(UserRoles.userId eq id)
+            .map { it[Permissions.code]!! }
     }
 
 }

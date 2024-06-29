@@ -17,4 +17,6 @@ interface IAuthService {
 
 
     fun getCurrentUserMenus(): List<Menu>
+
+    fun getCurrentUserPermissions(): List<String?>
 }
